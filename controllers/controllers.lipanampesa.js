@@ -1,7 +1,6 @@
 import request from "request";
 import "dotenv/config";
 import { getTimestamp } from "../Utils/utils.timestamp.js";
-import ngrok from "ngrok";
 
 // @desc initiate stk push
 // @method POST
@@ -19,12 +18,7 @@ export const initiateSTKPush = async (req, res) => {
     const password = new Buffer.from(
       process.env.BUSINESS_SHORT_CODE + process.env.PASS_KEY + timestamp
     ).toString("base64");
-    // create callback url
-    const callback_url = await ngrok.connect(process.env.PORT);
-    const api = ngrok.getApi();
-    await api.listTunnels();
 
-    console.log("callback ", callback_url);
     request(
       {
         url: url,
@@ -41,7 +35,7 @@ export const initiateSTKPush = async (req, res) => {
           PartyA: phone,
           PartyB: process.env.BUSINESS_SHORT_CODE,
           PhoneNumber: phone,
-          CallBackURL: `${callback_url}/api/stkPushCallback/${Order_ID}`,
+          CallBackURL: `https://a77d-41-191-227-165.ngrok-free.app/api/stkPushCallback/${Order_ID}`,
           AccountReference: "SOLVA BUSINESS GROUP",
           TransactionDesc: "Paid online",
         },

@@ -7,14 +7,9 @@ var _routesLipanampesa = _interopRequireDefault(require("./routes/routes.lipanam
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 // initialise exxpress
 var app = (0, _express["default"])();
-
-// express middleware that convert request body to JSON.
 app.use(_express["default"].json());
 app.use((0, _cors["default"])());
-
-// import routes
-
-app.use('/api', _routesLipanampesa["default"]);
+app.use("/api", _routesLipanampesa["default"]);
 var port = process.env.PORT;
 app.listen(port, function () {
   console.log("App listening on port ".concat(port));

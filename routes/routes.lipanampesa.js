@@ -1,18 +1,21 @@
-import express from 'express'
-const router = express.Router()
+import express from "express";
+const router = express.Router();
 import {
-    initiateSTKPush,
-    stkPushCallback,
-    confirmPayment
-
-
+  initiateSTKPush,
+  stkPushCallback,
+  confirmPayment,
 } from "../controllers/controllers.lipanampesa.js";
+import { accessToken } from "../middlewares/middlewares.generateAccessToken.js";
 
+// Default route handler
+router.get("/", (req, res) => {
+  res.send("Solva Business Group");
+});
 
-import {accessToken} from "../middlewares/middlewares.generateAccessToken.js";
+router.route("/stkPush").post(accessToken, initiateSTKPush);
+router.route("/stkPushCallback/:Order_ID").post(stkPushCallback);
+router
+  .route("/confirmPayment/:CheckoutRequestID")
+  .post(accessToken, confirmPayment);
 
-router.route('/stkPush').post(accessToken,initiateSTKPush)
-router.route('/stkPushCallback/:Order_ID').post(stkPushCallback)
-router.route('/confirmPayment/:CheckoutRequestID').post(accessToken,confirmPayment)
-
-export default router
+export default router;
