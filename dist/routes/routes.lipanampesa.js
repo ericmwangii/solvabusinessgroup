@@ -1,19 +1,13 @@
-"use strict";
+import express from "express";
+var router = express.Router();
+import { initiateSTKPush, stkPushCallback, confirmPayment } from "../controllers/controllers.lipanampesa.js";
+import { accessToken } from "../middlewares/middlewares.generateAccessToken.js";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports["default"] = void 0;
-var _express = _interopRequireDefault(require("express"));
-var _controllersLipanampesa = require("../controllers/controllers.lipanampesa.js");
-var _middlewaresGenerateAccessToken = require("../middlewares/middlewares.generateAccessToken.js");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-var router = _express["default"].Router();
 // Default route handler
 router.get("/", function (req, res) {
   res.send("Solva Business Group");
 });
-router.route("/stkPush").post(_middlewaresGenerateAccessToken.accessToken, _controllersLipanampesa.initiateSTKPush);
-router.route("/stkPushCallback/:Order_ID").post(_controllersLipanampesa.stkPushCallback);
-router.route("/confirmPayment/:CheckoutRequestID").post(_middlewaresGenerateAccessToken.accessToken, _controllersLipanampesa.confirmPayment);
-var _default = exports["default"] = router;
+router.route("/stkPush").post(accessToken, initiateSTKPush);
+router.route("/stkPushCallback/:Order_ID").post(stkPushCallback);
+router.route("/confirmPayment/:CheckoutRequestID").post(accessToken, confirmPayment);
+export default router;

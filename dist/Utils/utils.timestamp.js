@@ -1,13 +1,7 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.getTimestamp = void 0;
 function parseDate(val) {
   return val < 10 ? "0" + val : val;
 }
-var getTimestamp = exports.getTimestamp = function getTimestamp() {
+export var getTimestamp = function getTimestamp() {
   var dateString = new Date().toLocaleString("en-us", {
     timeZone: "Africa/Nairobi"
   });

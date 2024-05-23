@@ -1,17 +1,10 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.accessToken = void 0;
-var _request = _interopRequireDefault(require("request"));
-require("dotenv/config");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-var accessToken = exports.accessToken = function accessToken(req, res, next) {
+import request from "request";
+import 'dotenv/config';
+export var accessToken = function accessToken(req, res, next) {
   try {
     var url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
     var auth = new Buffer.from("".concat(process.env.SAFARICOM_CONSUMER_KEY, ":").concat(process.env.SAFARICOM_CONSUMER_SECRET)).toString('base64');
-    (0, _request["default"])({
+    request({
       url: url,
       headers: {
         "Authorization": "Basic " + auth
