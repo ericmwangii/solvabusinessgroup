@@ -5,18 +5,29 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "start": "nodemon server.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rimraf dist && babel . --out-dir dist --ignore node_modules",
+    "add-build": "git add dist",
+    "dev": "nodemon --exec babel-node server.js"
   },
+  "pre-commit": [
+    "build",
+    "add-build"
+  ],
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "ngrok": "^4.3.3",
+    "pre-commit": "^1.2.2",
     "request": "^2.88.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.16"
+    "@babel/cli": "^7.24.5",
+    "@babel/core": "^7.24.5",
+    "@babel/preset-env": "^7.24.5",
+    "nodemon": "^2.0.22",
+    "rimraf": "^5.0.7"
   },
   "repository": {
     "type": "git",
