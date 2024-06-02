@@ -7,6 +7,11 @@ import lipaNaMpesaRoutes from "./routes/routes.lipanampesa.js";
 var app = express();
 app.use(express.json());
 app.use(cors());
+
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
+
 app.use("/api", lipaNaMpesaRoutes);
 var port = process.env.PORT;
 app.listen(port, function () {

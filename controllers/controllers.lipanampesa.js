@@ -9,8 +9,7 @@ import { getTimestamp } from "../Utils/utils.timestamp.js";
 export const initiateSTKPush = async (req, res) => {
   try {
     const { amount, phone, Order_ID } = req.body;
-    const url =
-      "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
+    const url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
     const auth = "Bearer " + req.safaricom_access_token;
 
     const timestamp = getTimestamp();
@@ -35,7 +34,7 @@ export const initiateSTKPush = async (req, res) => {
           PartyA: phone,
           PartyB: process.env.BUSINESS_SHORT_CODE,
           PhoneNumber: phone,
-          CallBackURL: `https://a77d-41-191-227-165.ngrok-free.app/api/stkPushCallback/${Order_ID}`,
+          CallBackURL: `https://solva-mech.vercel.app/api/stkPushCallback/${Order_ID}`,
           AccountReference: "SOLVA BUSINESS GROUP",
           TransactionDesc: "Paid online",
         },
@@ -127,7 +126,7 @@ export const stkPushCallback = async (req, res) => {
 // @access public
 export const confirmPayment = async (req, res) => {
   try {
-    const url = "https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query";
+    const url = "https://api.safaricom.co.ke/mpesa/stkpushquery/v1/query";
     const auth = "Bearer " + req.safaricom_access_token;
 
     const timestamp = getTimestamp();
