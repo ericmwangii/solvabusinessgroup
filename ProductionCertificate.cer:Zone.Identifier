@@ -1,0 +1,4 @@
+[ZoneTransfer]
+ZoneId=3
+ReferrerUrl=https://developer.safaricom.co.ke/APIs/BusinessToCustomer
+HostUrl=https://developer.safaricom.co.ke/api/v1/GenerateSecurityCredential/ProductionCertificate.cer

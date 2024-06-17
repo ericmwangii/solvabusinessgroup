@@ -171,3 +171,13 @@ export const confirmPayment = async (req, res) => {
     });
   }
 };
+
+export const b2CResult = (req, res) => {
+  console.log("-------------------- B2C Result -----------------");
+  console.log(JSON.stringify(req.body.Result));
+};
+
+export const b2cTimeout = (req, res) => {
+  console.log("-------------------- B2C Timeout -----------------");
+  console.log(req.body);
+};
