@@ -4,24 +4,33 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 import request from "request";
 import "dotenv/config";
-import { getTimestamp } from "../Utils/utils.timestamp.js";
 
-// @desc initiate stk push
+// @desc initiate b2c
 // @method POST
-// @route /stkPush
+// @route /b2c
 // @access public
-export var initiateSTKPush = /*#__PURE__*/function () {
+export var initiateB2C = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
-    var _req$body, amount, phone, Order_ID, url, auth, timestamp, password;
+    var makeid, url, auth, _req$body, amount, phone, unique;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
           try {
-            _req$body = req.body, amount = _req$body.amount, phone = _req$body.phone, Order_ID = _req$body.Order_ID;
-            url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
+            makeid = function makeid(length) {
+              var result = "";
+              var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+              var charactersLength = characters.length;
+              var counter = 0;
+              while (counter < length) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                counter += 1;
+              }
+              return result;
+            };
+            url = "https://api.safaricom.co.ke/mpesa/b2c/v3/paymentrequest";
             auth = "Bearer " + req.safaricom_access_token;
-            timestamp = getTimestamp(); //shortcode + passkey + timestamp
-            password = new Buffer.from(process.env.BUSINESS_SHORT_CODE + process.env.PASS_KEY + timestamp).toString("base64");
+            _req$body = req.body, amount = _req$body.amount, phone = _req$body.phone;
+            unique = makeid(12);
             request({
               url: url,
               method: "POST",
@@ -29,17 +38,17 @@ export var initiateSTKPush = /*#__PURE__*/function () {
                 Authorization: auth
               },
               json: {
-                BusinessShortCode: process.env.BUSINESS_SHORT_CODE,
-                Password: password,
-                Timestamp: timestamp,
-                TransactionType: "CustomerPayBillOnline",
+                OriginatorConversationID: unique,
+                InitiatorName: "ericm",
+                SecurityCredential: "YSVLphzsySe9k2n4T5MHin4RP36MWiSeYA4/4E6UxxgXPb5rS+vF+J/9B3ayhobwmE7jym2ePe4ABtnxpamTQL1HlDL0+4F2TlM2Bw+1cLoP35YeSoxakFdmrGs/S2mNwuP3tMZJCSVnseVdhT69wHQv90XW4Z6oVAui13I4WgGOTMgbjaXOpRb5+wGaObBoiMmsv8Hy9DZYuRllbFwwvlGz64AP2WlrK5+5Cj54Bub8wHHIiWN45UmeqOS1nSrlIw2tsJkxFgSAV60sq8uValNCQKnIRLv+vtQyptl0cExnrlzTM6hXDBEhV5ltAM9syKGzAnvGv1Xf//azMr+VYQ==",
+                CommandID: "BusinessPayment",
                 Amount: amount,
-                PartyA: phone,
-                PartyB: process.env.BUSINESS_SHORT_CODE,
-                PhoneNumber: phone,
-                CallBackURL: "https://solva-mech.vercel.app/api/stkPushCallback/".concat(Order_ID),
-                AccountReference: "SOLVA BUSINESS GROUP",
-                TransactionDesc: "Paid online"
+                PartyA: "3033729",
+                PartyB: phone,
+                Remarks: "PAYMENT",
+                QueueTimeOutURL: "https://solva-mech.vercel.app/api/b2c-timeout",
+                ResultURL: "https://solva-mech.vercel.app/api/b2c-result",
+                Occassion: "SOLVA BUSINESS GROUP"
               }
             }, function (e, response, body) {
               if (e) {
@@ -65,127 +74,7 @@ export var initiateSTKPush = /*#__PURE__*/function () {
       }
     }, _callee);
   }));
-  return function initiateSTKPush(_x, _x2) {
+  return function initiateB2C(_x, _x2) {
     return _ref.apply(this, arguments);
   };
 }();
-
-// @desc callback route Safaricom will post transaction status
-// @method POST
-// @route /stkPushCallback/:Order_ID
-// @access public
-export var stkPushCallback = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var Order_ID, _req$body$Body$stkCal, MerchantRequestID, CheckoutRequestID, ResultCode, ResultDesc, CallbackMetadata, meta, PhoneNumber, Amount, MpesaReceiptNumber, TransactionDate;
-    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-      while (1) switch (_context2.prev = _context2.next) {
-        case 0:
-          _context2.prev = 0;
-          //    order id
-          Order_ID = req.params.Order_ID; //callback details
-          _req$body$Body$stkCal = req.body.Body.stkCallback, MerchantRequestID = _req$body$Body$stkCal.MerchantRequestID, CheckoutRequestID = _req$body$Body$stkCal.CheckoutRequestID, ResultCode = _req$body$Body$stkCal.ResultCode, ResultDesc = _req$body$Body$stkCal.ResultDesc, CallbackMetadata = _req$body$Body$stkCal.CallbackMetadata; //     get the meta data from the meta
-          _context2.t0 = Object;
-          _context2.next = 6;
-          return CallbackMetadata.Item;
-        case 6:
-          _context2.t1 = _context2.sent;
-          meta = _context2.t0.values.call(_context2.t0, _context2.t1);
-          PhoneNumber = meta.find(function (o) {
-            return o.Name === "PhoneNumber";
-          }).Value.toString();
-          Amount = meta.find(function (o) {
-            return o.Name === "Amount";
-          }).Value.toString();
-          MpesaReceiptNumber = meta.find(function (o) {
-            return o.Name === "MpesaReceiptNumber";
-          }).Value.toString();
-          TransactionDate = meta.find(function (o) {
-            return o.Name === "TransactionDate";
-          }).Value.toString(); // do something with the data
-          console.log("-".repeat(20), " OUTPUT IN THE CALLBACK ", "-".repeat(20));
-          console.log("\n            Order_ID : ".concat(Order_ID, ",\n            MerchantRequestID : ").concat(MerchantRequestID, ",\n            CheckoutRequestID: ").concat(CheckoutRequestID, ",\n            ResultCode: ").concat(ResultCode, ",\n            ResultDesc: ").concat(ResultDesc, ",\n            PhoneNumber : ").concat(PhoneNumber, ",\n            Amount: ").concat(Amount, ", \n            MpesaReceiptNumber: ").concat(MpesaReceiptNumber, ",\n            TransactionDate : ").concat(TransactionDate, "\n        "));
-          res.json(true);
-          _context2.next = 21;
-          break;
-        case 17:
-          _context2.prev = 17;
-          _context2.t2 = _context2["catch"](0);
-          console.error("Error while trying to update LipaNaMpesa details from the callback", _context2.t2);
-          res.status(503).send({
-            message: "Something went wrong with the callback",
-            error: _context2.t2.message
-          });
-        case 21:
-        case "end":
-          return _context2.stop();
-      }
-    }, _callee2, null, [[0, 17]]);
-  }));
-  return function stkPushCallback(_x3, _x4) {
-    return _ref2.apply(this, arguments);
-  };
-}();
-
-// @desc Check from safaricom servers the status of a transaction
-// @method GET
-// @route /confirmPayment/:CheckoutRequestID
-// @access public
-export var confirmPayment = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-    var url, auth, timestamp, password;
-    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-      while (1) switch (_context3.prev = _context3.next) {
-        case 0:
-          try {
-            url = "https://api.safaricom.co.ke/mpesa/stkpushquery/v1/query";
-            auth = "Bearer " + req.safaricom_access_token;
-            timestamp = getTimestamp(); //shortcode + passkey + timestamp
-            password = new Buffer.from(process.env.BUSINESS_SHORT_CODE + process.env.PASS_KEY + timestamp).toString("base64");
-            request({
-              url: url,
-              method: "POST",
-              headers: {
-                Authorization: auth
-              },
-              json: {
-                BusinessShortCode: process.env.BUSINESS_SHORT_CODE,
-                Password: password,
-                Timestamp: timestamp,
-                CheckoutRequestID: req.params.CheckoutRequestID
-              }
-            }, function (error, response, body) {
-              if (error) {
-                console.log(error);
-                res.status(503).send({
-                  message: "Something went wrong while trying to create LipaNaMpesa details. Contact admin",
-                  error: error
-                });
-              } else {
-                res.status(200).json(body);
-              }
-            });
-          } catch (e) {
-            console.error("Error while trying to create LipaNaMpesa details", e);
-            res.status(503).send({
-              message: "Something went wrong while trying to create LipaNaMpesa details. Contact admin",
-              error: e
-            });
-          }
-        case 1:
-        case "end":
-          return _context3.stop();
-      }
-    }, _callee3);
-  }));
-  return function confirmPayment(_x5, _x6) {
-    return _ref3.apply(this, arguments);
-  };
-}();
-export var b2CResult = function b2CResult(req, res) {
-  console.log("-------------------- B2C Result -----------------");
-  console.log(JSON.stringify(req.body.Result));
-};
-export var b2cTimeout = function b2cTimeout(req, res) {
-  console.log("-------------------- B2C Timeout -----------------");
-  console.log(req.body);
-};
